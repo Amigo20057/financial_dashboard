@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --font-prompt: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --breakpoint-sm: 320px;
+  --breakpoint-mds: 390px;
+  --breakpoint-md: 480px;
+  --breakpoint-lg: 768px;
+  --breakpoint-xl: 1024px;
+  --breakpoint-xxl: 1440px;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-width: 240px;
+  min-height: 100vh;
+
+  @apply font-prompt;
+}
+
+#root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @apply font-prompt text-white flex w-full;
+}
