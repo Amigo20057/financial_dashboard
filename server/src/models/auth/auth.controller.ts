@@ -3,15 +3,17 @@ import { login, register } from "./auth.service";
 
 const router = Router();
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+  maxAge: 1000 * 60 * 60,
+} as const;
+
 router.post("/register", async (req: Request, res: Response) => {
   try {
     const user = await register(req.body);
-    res.cookie("token", user.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60,
-    });
+    res.cookie("token", user.token, cookieOptions);
     return res.status(201).json(user);
   } catch (error) {
     console.error(error);
@@ -22,12 +24,7 @@ router.post("/register", async (req: Request, res: Response) => {
 router.post("/login", async (req: Request, res: Response) => {
   try {
     const user = await login(req.body);
-    res.cookie("token", user.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60,
-    });
+    res.cookie("token", user.token, cookieOptions);
     return res.status(200).json(user);
   } catch (error) {
     console.error(error);
@@ -40,7 +37,7 @@ router.post("/logout", async (req: Request, res: Response) => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {

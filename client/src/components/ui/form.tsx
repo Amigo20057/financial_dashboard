@@ -25,9 +25,8 @@ export default function Form({ type }: IProps) {
       dispatch(registerUser(data as IRegister));
     } else if (type === "login") {
       dispatch(loginUser(data as ILogin));
-
-      navigate("/dashboard");
     }
+    navigate("/dashboard");
   };
 
   return (

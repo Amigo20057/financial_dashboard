@@ -45,6 +45,17 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk("users/logout", async () => {
+  const response = await axios.post(
+    `${import.meta.env.VITE_SERVER_URL}/auth/logout`,
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+});
+
 const initialState: UserState = {
   value: {},
   status: "idle",
@@ -91,6 +102,19 @@ export const userSlice = createSlice({
         state.value = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Unknown error";
+      });
+
+    builder
+      .addCase(logoutUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.status = "succeeded";
+        state.value = {};
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Unknown error";
       });

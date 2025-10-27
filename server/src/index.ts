@@ -11,9 +11,11 @@ const port = process.env.APPLICATION_PORT;
 const app = express();
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL!],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    origin: process.env.CLIENT_URL,
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 app.use(cookieParser());

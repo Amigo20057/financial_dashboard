@@ -1,6 +1,11 @@
+import { useNavigate } from "react-router";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { logoutUser } from "../redux/slices/user.slice";
 import SidebarBtn from "./ui/sidebar-btn";
 
 export default function Sidebar() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const sidebarBts = [
     { text: "Дашборд", path: "/dashboard" },
     { text: "Операції", path: "/operations" },
@@ -8,6 +13,11 @@ export default function Sidebar() {
     { text: "Звіти", path: "/reports" },
     { text: "Налаштування", path: "/settings" },
   ];
+
+  const logout = () => {
+    dispatch(logoutUser());
+    navigate("/auth/login");
+  };
 
   return (
     <aside className="w-72 bg-white rounded-2xl shadow p-4 flex flex-col gap-6 h-full">
@@ -27,7 +37,16 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="mt-auto text-xs text-gray-500">© 2025 YourName</div>
+      <div className="mt-auto text-red-700">
+        <div className="flex flex-col gap-2 flex-1">
+          <button
+            className="text-left py-2 px-3 cursor-pointer rounded hover:bg-gray-100"
+            onClick={logout}
+          >
+            Вийти
+          </button>
+        </div>
+      </div>
     </aside>
   );
 }
