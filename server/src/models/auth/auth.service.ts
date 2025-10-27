@@ -5,7 +5,7 @@ import jsonwebtoken from "jsonwebtoken";
 import "dotenv/config";
 
 async function generateToken(id: string, email: string): Promise<string> {
-  return jsonwebtoken.sign({ id, email }, process.env.SECRET_KEY!, {
+  return jsonwebtoken.sign({ id, email }, process.env.JWT_SECRET!, {
     expiresIn: "1h",
   });
 }
@@ -27,7 +27,7 @@ export async function login(
 ): Promise<Omit<IUser, "password"> & { token: string }> {
   const userExists = await findUserByEmail(data.email);
   if (!userExists) throw new Error("Wrong data");
-  const validPassword = await verify(data.password, userExists.password);
+  const validPassword = await verify(userExists.password, data.password);
   if (!validPassword) throw new Error("Wrong data");
   const token = await generateToken(userExists.id, userExists.email);
   const { password, ...userWithoutPassword } = userExists;

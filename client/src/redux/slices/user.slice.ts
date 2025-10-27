@@ -9,23 +9,20 @@ interface UserState {
   error: string | null;
 }
 
-export const fetchUser = createAsyncThunk(
-  "users/fetch",
-  async (userId: string) => {
-    const response = await axios.get<IUser>(
-      `${import.meta.env.VITE_SERVER_URL}/users/profile/${userId}`,
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  }
-);
+export const fetchUser = createAsyncThunk("users/fetch", async () => {
+  const response = await axios.get<IUser>(
+    `${import.meta.env.VITE_SERVER_URL}/users/profile`,
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+});
 
 export const registerUser = createAsyncThunk(
   "users/register",
   async (userData: IRegister) => {
-    const response = await axios.post<IUser & { token: string }>(
+    const response = await axios.post(
       `${import.meta.env.VITE_SERVER_URL}/auth/register`,
       userData,
       {

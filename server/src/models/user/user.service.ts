@@ -20,9 +20,10 @@ export async function findUserById(id: string): Promise<IUser | null> {
 export async function createUser(user: IRegister): Promise<IUser> {
   const [name, surname] = user.fullName.split(" ");
   const result = await pool.query(
-    "INSERT INTO public.users(name, surname, email, password) VALUES($1,$2,$3,$4)",
+    "INSERT INTO public.users(name, surname, email, password) VALUES($1,$2,$3,$4) RETURNING *",
     [name, surname, user.email, user.password]
   );
+  console.log(result.rows[0]);
   await createDashboard(result.rows[0].id);
   return result.rows[0];
 }

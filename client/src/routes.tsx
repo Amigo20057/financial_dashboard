@@ -1,6 +1,9 @@
 import { useRoutes, Navigate, type RouteObject } from "react-router";
 import MainLayout from "./layout/main-layout";
 import Home from "./pages/home";
+import AuthLayout from "./layout/auth-layout";
+import Register from "./pages/register";
+import Login from "./pages/login";
 
 const routes: RouteObject[] = [
   {
@@ -14,6 +17,20 @@ const routes: RouteObject[] = [
       {
         path: "dashboard",
         element: <Home />,
+      },
+    ],
+  },
+  {
+    path: "/auth",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/auth/register",
+        element: <Register />,
+      },
+      {
+        path: "/auth/login",
+        element: <Login />,
       },
     ],
   },
