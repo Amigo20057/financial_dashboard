@@ -23,7 +23,6 @@ export async function createUser(user: IRegister): Promise<IUser> {
     "INSERT INTO public.users(name, surname, email, password) VALUES($1,$2,$3,$4) RETURNING *",
     [name, surname, user.email, user.password]
   );
-  console.log(result.rows[0]);
   await createDashboard(result.rows[0].id);
   return result.rows[0];
 }

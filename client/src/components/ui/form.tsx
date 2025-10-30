@@ -2,31 +2,60 @@ import { useForm } from "react-hook-form";
 import type { ILogin, IRegister } from "../../types/user.interface";
 import { Link, useNavigate } from "react-router";
 import { loginUser, registerUser } from "../../redux/slices/user.slice";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
+import type { RootState } from "../../redux/store";
 
 interface IProps {
   type: "login" | "register";
+  setMessageType?: (type: "success" | "info" | "error") => void;
+  setMessageText?: (text: string) => void;
 }
 
-export default function Form({ type }: IProps) {
+export default function Form({ type, setMessageType, setMessageText }: IProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
+    watch,
   } = useForm<IRegister & ILogin>({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const userState = useAppSelector((state: RootState) => state.user);
 
-  const onSubmit = (data: IRegister | ILogin) => {
-    console.log(data);
+  const watchedFields = watch();
+
+  const isFormValid = () => {
     if (type === "register") {
-      dispatch(registerUser(data as IRegister));
-    } else if (type === "login") {
-      dispatch(loginUser(data as ILogin));
+      return (
+        watchedFields.fullName &&
+        watchedFields.email &&
+        watchedFields.password &&
+        isValid
+      );
+    } else {
+      return watchedFields.email && watchedFields.password && isValid;
     }
-    navigate("/dashboard");
+  };
+
+  const onSubmit = async (data: IRegister | ILogin) => {
+    try {
+      let result;
+      if (type === "register") {
+        result = await dispatch(registerUser(data as IRegister)).unwrap();
+      } else if (type === "login") {
+        result = await dispatch(loginUser(data as ILogin)).unwrap();
+      }
+      if (result) {
+        navigate("/dashboard");
+      }
+    } catch (err: unknown) {
+      if (setMessageType && setMessageText) {
+        setMessageType("error");
+        setMessageText(err instanceof Error ? err.message : String(err));
+      }
+    }
   };
 
   return (
@@ -220,7 +249,7 @@ export default function Form({ type }: IProps) {
                   required: "Password is required",
                   minLength: {
                     value: 5,
-                    message: "Password must be at least 6 characters",
+                    message: "Password must be at least 5 characters",
                   },
                   maxLength: {
                     value: 100,
@@ -374,7 +403,7 @@ export default function Form({ type }: IProps) {
                   required: "Password is required",
                   minLength: {
                     value: 5,
-                    message: "Password must be at least 6 characters",
+                    message: "Password must be at least 5 characters",
                   },
                 })}
                 placeholder="••••••••"
@@ -422,9 +451,41 @@ export default function Form({ type }: IProps) {
 
       <button
         type="submit"
-        className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3.5 px-4 rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5"
+        disabled={!isFormValid() || userState.status === "loading"}
+        className={`w-full py-3.5 px-4 rounded-xl font-semibold text-white transition-all duration-200 flex items-center justify-center gap-2
+    ${
+      !isFormValid() || userState.status === "loading"
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+    }`}
       >
-        {type === "register" ? "Create Account" : "Sign In"}
+        {userState.status === "loading" && (
+          <svg
+            className="animate-spin h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+        )}
+        {userState.status === "loading"
+          ? "Processing..."
+          : type === "register"
+          ? "Create Account"
+          : "Sign In"}
       </button>
 
       <p className="text-center text-sm text-gray-600 mt-6">

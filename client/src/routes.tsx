@@ -4,6 +4,7 @@ import Home from "./pages/home";
 import AuthLayout from "./layout/auth-layout";
 import Register from "./pages/register";
 import Login from "./pages/login";
+import NotFound from "./pages/not-found";
 
 const routes: RouteObject[] = [
   {
@@ -33,6 +34,10 @@ const routes: RouteObject[] = [
         element: <Login />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ];
 

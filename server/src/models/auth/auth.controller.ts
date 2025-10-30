@@ -15,9 +15,9 @@ router.post("/register", async (req: Request, res: Response) => {
     const user = await register(req.body);
     res.cookie("token", user.token, cookieOptions);
     return res.status(201).json(user);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Failed register", error });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return res.status(500).json({ message: "Register failed", error: message });
   }
 });
 
@@ -26,9 +26,9 @@ router.post("/login", async (req: Request, res: Response) => {
     const user = await login(req.body);
     res.cookie("token", user.token, cookieOptions);
     return res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Failed login", error });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return res.status(500).json({ message: "Login failed", error: message });
   }
 });
 
@@ -40,9 +40,9 @@ router.post("/logout", async (req: Request, res: Response) => {
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     });
     return res.status(200).json({ message: "Logged out successfully" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Failed logout", error });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return res.status(500).json({ message: "Logout failed", error: message });
   }
 });
 

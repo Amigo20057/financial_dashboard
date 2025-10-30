@@ -1,8 +1,26 @@
 import { Outlet } from "react-router";
+import { useState, useEffect } from "react";
+import MessageBox from "../components/ui/message-box";
 
 export default function AuthLayout() {
+  const [messageText, setMessageText] = useState("");
+  const [messageType, setMessageType] = useState<"success" | "info" | "error">(
+    "info"
+  );
+
+  useEffect(() => {
+    if (messageText) {
+      const timer = setTimeout(() => setMessageText(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [messageText]);
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4 relative">
+      <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50">
+        <MessageBox type={messageType} text={messageText} />
+      </div>
+
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
@@ -11,34 +29,20 @@ export default function AuthLayout() {
 
       <div className="relative w-full max-w-md">
         <div className="bg-white w-full rounded-3xl shadow-xl p-8 backdrop-blur-sm bg-opacity-95 border border-gray-100">
-          <Outlet />
+          <Outlet context={{ setMessageText, setMessageType }} />
         </div>
       </div>
 
       <style>{`
         @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
         }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
       `}</style>
     </div>
   );

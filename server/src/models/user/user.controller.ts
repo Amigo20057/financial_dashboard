@@ -9,8 +9,10 @@ router.get("/profile", authMiddleware, async (req: Request, res: Response) => {
     const user = await findUserById(req.user.id);
     return res.status(200).json(user);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Failed get profile", error });
+    const message = error instanceof Error ? error.message : String(error);
+    return res
+      .status(500)
+      .json({ message: "Failed get profile", error: message });
   }
 });
 
