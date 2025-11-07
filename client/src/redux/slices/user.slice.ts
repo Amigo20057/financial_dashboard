@@ -1,13 +1,11 @@
-import type { RequestStatus } from "../../types/global.interface";
-import type { ILogin, IRegister, IUser } from "../../types/user.interface";
+import type {
+  ILogin,
+  IRegister,
+  IUser,
+  UserState,
+} from "../../types/user.interface";
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-interface UserState {
-  value: IUser | object;
-  status: RequestStatus;
-  error: string | null;
-}
 
 export const fetchUser = createAsyncThunk("users/fetch", async () => {
   const response = await axios.get<IUser>(

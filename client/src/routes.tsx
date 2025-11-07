@@ -5,6 +5,7 @@ import AuthLayout from "./layout/auth-layout";
 import Register from "./pages/register";
 import Login from "./pages/login";
 import NotFound from "./pages/not-found";
+import Settings from "./pages/settings";
 
 const routes: RouteObject[] = [
   {
@@ -18,6 +19,10 @@ const routes: RouteObject[] = [
       {
         path: "dashboard",
         element: <Home />,
+      },
+      {
+        path: "settings",
+        element: <Settings />,
       },
     ],
   },

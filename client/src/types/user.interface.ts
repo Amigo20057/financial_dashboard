@@ -1,4 +1,4 @@
-import { IBase } from "./global.interface";
+import type { IBase, RequestStatus } from "./global.interface";
 
 export interface IUser extends IBase {
   name: string;
@@ -16,4 +16,10 @@ export interface IRegister {
 export interface ILogin {
   email: string;
   password: string;
+}
+
+export interface UserState {
+  value: IUser | object;
+  status: RequestStatus;
+  error: string | null;
 }

@@ -20,7 +20,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-72 bg-white rounded-2xl shadow p-4 flex flex-col gap-6 h-full">
+    <aside className="min-w-72 bg-white rounded-2xl shadow p-4 flex flex-col gap-6 h-full">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-400 rounded-full flex items-center justify-center text-white font-bold">
           FD
