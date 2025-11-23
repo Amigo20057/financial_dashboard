@@ -1,3 +1,4 @@
+import type { IDashboard } from "./dashboard.interface";
 import type { IUser } from "./user.interface";
 
 export interface IBase {
@@ -10,5 +11,7 @@ export type RequestStatus = "idle" | "loading" | "succeeded" | "failed";
 
 export interface IContextMain {
   user: IUser;
+  dashboard: IDashboard;
+  dashboardStatus: RequestStatus;
   userStatus: RequestStatus;
 }

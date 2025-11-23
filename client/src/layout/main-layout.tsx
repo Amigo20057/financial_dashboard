@@ -6,18 +6,25 @@ import { fetchUser } from "../redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "../hooks/useAppDispatch";
 import type { IContextMain } from "../types/global.interface";
 import type { IUser } from "../types/user.interface";
+import type { IDashboard } from "../types/dashboard.interface";
+import { fetchDashboard } from "../redux/slices/dashboard.slice";
 
 export default function MainLayout() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state: RootState) => state.user.value);
+  const dashboard = useAppSelector((state: RootState) => state.dashboard.value);
   const userStatus = useAppSelector((state: RootState) => state.user.status);
+  const dashboardStatus = useAppSelector(
+    (state: RootState) => state.dashboard.status
+  );
 
   useEffect(() => {
     if (userStatus === "idle" && Object.keys(user).length === 0) {
       dispatch(fetchUser());
+      dispatch(fetchDashboard());
     }
-  }, [dispatch, user, userStatus]);
+  }, [dispatch, user, userStatus, dashboard, dashboardStatus]);
 
   if (userStatus === "failed" && Object.keys(user).length === 0) {
     navigate("/auth/login");
@@ -25,6 +32,8 @@ export default function MainLayout() {
 
   const context: IContextMain = {
     user: user as IUser,
+    dashboard: dashboard as IDashboard,
+    dashboardStatus,
     userStatus,
   };
 

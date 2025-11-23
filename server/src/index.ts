@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { authRouter } from "./models/auth/auth.controller";
 import { userRouter } from "./models/user/user.controller";
 import cors from "cors";
+import { dashBoardRouter } from "./models/dashboard/dashboard.controller";
 
 const port = process.env.APPLICATION_PORT;
 
@@ -28,6 +29,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
+app.use("/dashboard", dashBoardRouter);
 
 app.listen(port, async (err) => {
   await initDB();

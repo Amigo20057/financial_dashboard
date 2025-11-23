@@ -13,7 +13,7 @@ export async function getDashboardByUserId(
   userId: string
 ): Promise<IDashboard> {
   const result = await pool.query(
-    "SELECT * FROM public.users WHERE user_id = $1",
+    "SELECT * FROM public.dashboard WHERE user_id = $1",
     [userId]
   );
   return result.rows[0];
