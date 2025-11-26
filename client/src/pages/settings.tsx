@@ -5,9 +5,12 @@ import {
   UserOutlined,
   CalendarOutlined,
 } from "@ant-design/icons";
+import { useState } from "react";
+import UserSettingsModal from "../components/ui/user-settings-modal";
 
 export default function Settings() {
   const { user } = useOutletContext<IContextMain>();
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const initials = (user?.name?.[0] || "") + (user?.surname?.[0] || "");
 
@@ -88,12 +91,18 @@ export default function Settings() {
           </div>
 
           <div className="mt-8">
-            <button className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-700 transition shadow-sm">
+            <button
+              onClick={() => setIsOpenModal(true)}
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-700 transition shadow-sm"
+            >
               Редагувати профіль
             </button>
           </div>
         </div>
       </div>
+      {isOpenModal && (
+        <UserSettingsModal user={user} onClose={() => setIsOpenModal(false)} />
+      )}
     </div>
   );
 }

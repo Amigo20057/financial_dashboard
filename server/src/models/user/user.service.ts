@@ -26,3 +26,28 @@ export async function createUser(user: IRegister): Promise<IUser> {
   await createDashboard(result.rows[0].id);
   return result.rows[0];
 }
+
+export async function updateUser(
+  id: string,
+  updates: Partial<IUser>
+): Promise<IUser | null> {
+  const fields = Object.keys(updates);
+  const values = Object.values(updates);
+
+  if (fields.length === 0) return null;
+
+  const setString = fields
+    .map((field, index) => `${field} = $${index + 1}`)
+    .join(", ");
+
+  const query = `
+    UPDATE public.users
+    SET ${setString}
+    WHERE id = $${fields.length + 1}
+    RETURNING *
+  `;
+
+  const result = await pool.query(query, [...values, id]);
+
+  return result.rows[0] || null;
+}
