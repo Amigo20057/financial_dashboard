@@ -65,23 +65,23 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="mt-5 mb-5 w-full flex justify-between">
-        <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl">
+      <div className="mt-5 mb-5 w-full flex">
+        <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
           <p>Дохід за місяць</p>
           <h1 className="text-[24px] font-bold text-black">4.200$</h1>
           <p>Порівняно з попереднім місяцем +12%</p>
         </div>
-        <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl">
+        <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
           <p>Витрати за місяць</p>
           <h1 className="text-[24px] font-bold text-black">1.100$</h1>
           <p>
             Ліміт: 2000$ - <span className="text-red-500">Перевищено</span>
           </p>
         </div>
-        <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl">
+        <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
           <p>Коеф. заощаджень</p>
           <h1 className="text-[24px] font-bold text-black">38%</h1>
-          <p>Порада зменшити витрати на розваги</p>
+          <p>Порада: зменшити витрати на розваги</p>
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
@@ -136,7 +136,9 @@ export default function Home() {
             <div className="font-semibold">Витрати по категоріям</div>
             <div className="text-xs text-gray-500">Цей місяць</div>
           </div>
-          <div style={{ height: 240 }}>
+
+          {/* PieChart контейнер */}
+          <div style={{ height: 180 }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -154,25 +156,26 @@ export default function Home() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
+          </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              {mockCategoryData.map((c, i) => (
-                <div key={c.name} className="flex items-center gap-2">
-                  <div
-                    style={{
-                      width: 10,
-                      height: 10,
-                      background: COLORS[i % COLORS.length],
-                    }}
-                    className="rounded"
-                  />
-                  <div>
-                    <div className="font-semibold">{c.name}</div>
-                    <div className="text-xs text-gray-500">{c.value} ₴</div>
-                  </div>
+          {/* Легенда - тепер окремо, але в межах card */}
+          <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+            {mockCategoryData.map((c, i) => (
+              <div key={c.name} className="flex items-center gap-2">
+                <div
+                  style={{
+                    width: 10,
+                    height: 10,
+                    background: COLORS[i % COLORS.length],
+                  }}
+                  className="rounded"
+                />
+                <div>
+                  <div className="font-semibold">{c.name}</div>
+                  <div className="text-xs text-gray-500">{c.value} ₴</div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

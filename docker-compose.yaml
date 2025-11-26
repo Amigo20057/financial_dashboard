@@ -6,7 +6,7 @@ services:
     container_name: my_postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234567890
+      POSTGRES_PASSWORD: 12345
       POSTGRES_DB: finance
     ports:
       - "5433:5432"

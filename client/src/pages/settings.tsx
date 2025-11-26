@@ -30,7 +30,7 @@ export default function Settings() {
       </h1>
 
       <div className="bg-white border border-gray-200 rounded-3xl shadow-sm p-8 flex flex-col md:flex-row items-center md:items-start gap-8 transition-all duration-300 hover:shadow-md">
-        <div className="relative flex justify-center items-center w-[150px] h-[150px] rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white text-5xl font-semibold shadow-md">
+        <div className="relative flex justify-center items-center w-[150px] h-[150px] rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white text-5xl font-semibold shadow-md select-none">
           {initials}
         </div>
 
@@ -40,7 +40,7 @@ export default function Settings() {
               <p className="text-sm uppercase text-gray-500 font-medium tracking-wide mb-1">
                 Ім’я
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-mds font-semibold text-gray-900">
                 <UserOutlined />
                 {user.name}
               </p>
@@ -50,7 +50,7 @@ export default function Settings() {
               <p className="text-sm uppercase text-gray-500 font-medium tracking-wide mb-1">
                 Прізвище
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-mds font-semibold text-gray-900">
                 <UserOutlined />
                 {user.surname}
               </p>
@@ -60,7 +60,7 @@ export default function Settings() {
               <p className="text-sm uppercase text-gray-500 font-medium tracking-wide mb-1">
                 Емейл
               </p>
-              <div className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+              <div className="flex items-center gap-2 text-mds font-semibold text-gray-900">
                 <MailOutlined className="text-indigo-500" />
                 <span>{user.email}</span>
               </div>
@@ -70,7 +70,7 @@ export default function Settings() {
               <p className="text-sm uppercase text-gray-500 font-medium tracking-wide mb-1">
                 Дата створення
               </p>
-              <div className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+              <div className="flex items-center gap-2 text-mds font-semibold text-gray-900">
                 <CalendarOutlined className="text-indigo-500" />
                 <span>{formatDate(user.created_at)}</span>
               </div>
@@ -80,7 +80,7 @@ export default function Settings() {
               <p className="text-sm uppercase text-gray-500 font-medium tracking-wide mb-1">
                 Останнє оновлення
               </p>
-              <div className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+              <div className="flex items-center gap-2 text-mds font-semibold text-gray-900">
                 <CalendarOutlined className="text-indigo-500" />
                 <span>{formatDate(user.updated_at)}</span>
               </div>
