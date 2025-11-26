@@ -6,6 +6,7 @@ import Register from "./pages/register";
 import Login from "./pages/login";
 import NotFound from "./pages/not-found";
 import Settings from "./pages/settings";
+import Categories from "./pages/categories";
 
 const routes: RouteObject[] = [
   {
@@ -23,6 +24,10 @@ const routes: RouteObject[] = [
       {
         path: "settings",
         element: <Settings />,
+      },
+      {
+        path: "categories",
+        element: <Categories />,
       },
     ],
   },

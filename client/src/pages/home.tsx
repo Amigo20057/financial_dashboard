@@ -158,7 +158,6 @@ export default function Home() {
             </ResponsiveContainer>
           </div>
 
-          {/* Легенда - тепер окремо, але в межах card */}
           <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
             {mockCategoryData.map((c, i) => (
               <div key={c.name} className="flex items-center gap-2">
