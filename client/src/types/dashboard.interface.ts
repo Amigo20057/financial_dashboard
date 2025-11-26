@@ -1,10 +1,4 @@
-import type { IBase } from "./global.interface";
-
-export interface ICategories extends IBase {
-  name: string;
-  type: "income" | "expanse";
-  color: string;
-}
+import type { IBase, RequestStatus } from "./global.interface";
 
 export interface ITransactions extends IBase {
   userId: string;
@@ -32,4 +26,10 @@ export interface IDashboard {
   savingRate: number;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface DashboardState {
+  value: IDashboard | object;
+  status: RequestStatus;
+  error: string | null;
 }

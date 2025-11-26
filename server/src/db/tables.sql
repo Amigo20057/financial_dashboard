@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    type VARCHAR(10) CHECK (type IN ('income', 'expense')) NOT NULL, 
     color VARCHAR(20), 
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()

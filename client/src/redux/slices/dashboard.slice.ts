@@ -1,13 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { IDashboard } from "../../types/dashboard.interface";
-import type { RequestStatus } from "../../types/global.interface";
-
-interface DashboardState {
-  value: IDashboard | object;
-  status: RequestStatus;
-  error: string | null;
-}
+import type {
+  DashboardState,
+  IDashboard,
+} from "../../types/dashboard.interface";
 
 export const fetchDashboard = createAsyncThunk("dashboard/fetch", async () => {
   const response = await axios.get<IDashboard>(

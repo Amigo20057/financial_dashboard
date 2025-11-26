@@ -8,8 +8,8 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const sidebarBts = [
     { text: "Дашборд", path: "/dashboard" },
+    { text: "Категорії", path: "/category" },
     { text: "Операції", path: "/operations" },
-    { text: "Бюджет", path: "/budget" },
     { text: "Звіти", path: "/reports" },
     { text: "Налаштування", path: "/settings" },
   ];
