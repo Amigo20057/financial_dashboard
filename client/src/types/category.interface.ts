@@ -1,8 +1,12 @@
-import type { IBase, RequestStatus } from "./global.interface";
+import type { RequestStatus } from "./global.interface";
 
-export interface ICategory extends IBase {
+export interface ICategory {
+  id: number;
   name: string;
   color: string;
+  amount: number;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface CategoryState {

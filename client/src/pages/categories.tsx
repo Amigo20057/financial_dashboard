@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal, Input, Space, Card, ColorPicker } from "antd";
+import { Button, Space, Card } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   ResponsiveContainer,
@@ -10,67 +10,65 @@ import {
   Tooltip,
   Cell,
 } from "recharts";
-
-interface ICategory {
-  id: number;
-  name: string;
-  color: string;
-  value: number;
-}
-
-const mockCategories: ICategory[] = [
-  { id: 1, name: "Їжа", color: "#4F46E5", value: 420 },
-  { id: 2, name: "Транспорт", color: "#06B6D4", value: 180 },
-  { id: 3, name: "Розваги", color: "#F59E0B", value: 240 },
-  { id: 4, name: "Комуналка", color: "#EF4444", value: 300 },
-  { id: 5, name: "Інше", color: "#10B981", value: 519.5 },
-];
+import CreateCategoryModal from "../components/ui/create-category-modal";
+import { useOutletContext } from "react-router";
+import type { IContextMain } from "../types/global.interface";
+import type { ICategory } from "../types/category.interface";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import {
+  createCategory,
+  deleteCategory,
+  updateCategory,
+} from "../redux/slices/category.slise";
 
 export default function Categories() {
-  const [categories, setCategories] = useState<ICategory[]>(mockCategories);
+  const { categories, categoriesStatus } = useOutletContext<IContextMain>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [name, setName] = useState("");
-  const [color, setColor] = useState("#4F46E5");
+  const [editingCategory, setEditingCategory] = useState<ICategory | null>(
+    null
+  );
+  const dispatch = useAppDispatch();
 
-  const handleSave = () => {
-    if (editingId) {
-      setCategories(
-        categories.map((cat) =>
-          cat.id === editingId ? { ...cat, name, color } : cat
-        )
-      );
+  console.log("status: ", categoriesStatus);
+  console.log("Categories from context:", categories);
+
+  if (!Array.isArray(categories)) {
+    return <div>Loading...</div>;
+  }
+
+  const handleSave = (name: string, color: string) => {
+    if (editingCategory) {
+      dispatch(updateCategory({ id: editingCategory.id, name, color }));
     } else {
       const newCategory: ICategory = {
         id: Date.now(),
         name,
         color,
-        value: 0,
+        amount: 0,
       };
-      setCategories([...categories, newCategory]);
+      dispatch(createCategory(newCategory));
     }
     setIsModalOpen(false);
-    setEditingId(null);
-    setName("");
-    setColor("#4F46E5");
+    setEditingCategory(null);
   };
 
   const handleDelete = (id: number) => {
-    setCategories(categories.filter((cat) => cat.id !== id));
+    dispatch(deleteCategory(id));
   };
 
   const handleEdit = (category: ICategory) => {
-    setEditingId(category.id);
-    setName(category.name);
-    setColor(category.color);
+    setEditingCategory(category);
     setIsModalOpen(true);
   };
 
   const openCreateModal = () => {
-    setEditingId(null);
-    setName("");
-    setColor("#4F46E5");
+    setEditingCategory(null);
     setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingCategory(null);
   };
 
   return (
@@ -118,8 +116,8 @@ export default function Categories() {
                     color: "#000",
                   }}
                 />
-                <Bar dataKey="value" radius={[0, 8, 8, 0]}>
-                  {categories.map((entry, index) => (
+                <Bar dataKey="amount" radius={[0, 8, 8, 0]}>
+                  {categories?.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Bar>
@@ -133,7 +131,7 @@ export default function Categories() {
             Всі категорії
           </div>
           <div className="space-y-3 max-h-[400px] overflow-y-auto">
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <Card
                 key={category.id}
                 className="bg-gray-50 border border-gray-200"
@@ -154,7 +152,7 @@ export default function Categories() {
                         {category.name}
                       </div>
                       <div className="text-gray-600 text-sm">
-                        {category.value} ₴
+                        {category.amount} ₴
                       </div>
                     </div>
                   </div>
@@ -180,40 +178,12 @@ export default function Categories() {
         </div>
       </div>
 
-      <Modal
-        title={
-          <span className="text-lg">
-            {editingId ? "Редагувати категорію" : "Створити категорію"}
-          </span>
-        }
-        open={isModalOpen}
-        onOk={handleSave}
-        onCancel={() => setIsModalOpen(false)}
-        okText="Зберегти"
-        cancelText="Скасувати"
-      >
-        <div className="space-y-4 mt-4">
-          <div>
-            <label className="block mb-2 text-sm font-medium">Назва</label>
-            <Input
-              placeholder="Введіть назву категорії"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              size="large"
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium">Колір</label>
-            <ColorPicker
-              value={color}
-              onChange={(_, hex) => setColor(hex)}
-              showText
-              size="large"
-              className="w-full"
-            />
-          </div>
-        </div>
-      </Modal>
+      <CreateCategoryModal
+        isOpen={isModalOpen}
+        editingCategory={editingCategory}
+        onClose={handleCloseModal}
+        onSave={handleSave}
+      />
     </div>
   );
 }

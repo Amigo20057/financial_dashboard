@@ -1,3 +1,4 @@
+import type { ICategory } from "./category.interface";
 import type { IDashboard } from "./dashboard.interface";
 import type { IUser } from "./user.interface";
 
@@ -14,4 +15,6 @@ export interface IContextMain {
   dashboard: IDashboard;
   dashboardStatus: RequestStatus;
   userStatus: RequestStatus;
+  categoriesStatus: RequestStatus;
+  categories: ICategory[];
 }

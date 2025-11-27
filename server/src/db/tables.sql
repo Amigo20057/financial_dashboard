@@ -15,9 +15,11 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    color VARCHAR(20), 
+    color VARCHAR NOT NULL, 
+    amount NUMERIC(10,2) DEFAULT 0,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
 );
 
 -- === TRANSACTIONS ===
@@ -25,9 +27,8 @@ CREATE TABLE IF NOT EXISTS transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     category_id INT REFERENCES categories(id) ON DELETE SET NULL,
-    title VARCHAR(255) NOT NULL,
-    amount NUMERIC(10,2) NOT NULL,
     type VARCHAR(10) CHECK (type IN ('income', 'expense')) NOT NULL,
+    description VARCHAR(255),
     date TIMESTAMP NOT NULL DEFAULT NOW(),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
