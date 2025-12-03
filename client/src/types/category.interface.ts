@@ -4,7 +4,7 @@ export interface ICategory {
   id: number;
   name: string;
   color: string;
-  amount: number;
+  amount: string;
   created_at?: Date;
   updated_at?: Date;
 }

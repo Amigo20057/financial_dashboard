@@ -8,40 +8,61 @@ import type { IContextMain } from "../types/global.interface";
 import type { IUser } from "../types/user.interface";
 import type { IDashboard } from "../types/dashboard.interface";
 import { fetchDashboard } from "../redux/slices/dashboard.slice";
-import { fetchCategories } from "../redux/slices/category.slise";
+import { fetchCategories } from "../redux/slices/category.slice";
 import type { ICategory } from "../types/category.interface";
 
 export default function MainLayout() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const user = useAppSelector((state: RootState) => state.user.value);
-  const dashboard = useAppSelector((state: RootState) => state.dashboard.value);
   const userStatus = useAppSelector((state: RootState) => state.user.status);
+
+  const dashboard = useAppSelector((state: RootState) => state.dashboard.value);
   const dashboardStatus = useAppSelector(
     (state: RootState) => state.dashboard.status
   );
+
   const categories = useAppSelector((state: RootState) => state.category.value);
   const categoryStatus = useAppSelector(
     (state: RootState) => state.category.status
   );
 
   useEffect(() => {
-    if (userStatus === "idle" && Object.keys(user).length === 0) {
+    if (userStatus === "idle") {
       dispatch(fetchUser());
-      dispatch(fetchDashboard());
-      dispatch(fetchCategories());
     }
-  }, [dispatch, user, userStatus, dashboard, dashboardStatus, categoryStatus]);
+  }, [dispatch, userStatus]);
 
-  if (userStatus === "failed" && Object.keys(user).length === 0) {
-    navigate("/auth/login");
+  useEffect(() => {
+    if (userStatus === "succeeded") {
+      if (dashboardStatus === "idle") dispatch(fetchDashboard());
+      if (categoryStatus === "idle") dispatch(fetchCategories());
+    }
+
+    if (userStatus === "failed") {
+      navigate("/auth/login");
+    }
+  }, [userStatus, dashboardStatus, categoryStatus, dispatch, navigate]);
+
+  const isLoading =
+    userStatus === "loading" ||
+    dashboardStatus === "loading" ||
+    categoryStatus === "loading";
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="text-xl font-bold animate-pulse">Loading...</div>
+      </div>
+    );
   }
 
   const context: IContextMain = {
     user: user as IUser,
+    userStatus,
     dashboard: dashboard as IDashboard,
     dashboardStatus,
-    userStatus,
     categories: categories as ICategory[],
     categoriesStatus: categoryStatus,
   };

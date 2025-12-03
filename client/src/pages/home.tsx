@@ -14,9 +14,6 @@ import {
 } from "recharts";
 import { useState } from "react";
 import CreateTransactionModal from "../components/ui/create-transaction-modal";
-import type { ICategory } from "../types/category.interface";
-
-const COLORS = ["#4F46E5", "#06B6D4", "#F59E0B", "#EF4444", "#10B981"];
 
 const mockLineData = [
   { date: "01 Oct", income: 200, expenses: 150 },
@@ -28,31 +25,9 @@ const mockLineData = [
   { date: "30 Oct", income: 0, expenses: 100 },
 ];
 
-const mockCategoryData = [
-  { name: "Їжа", value: 420 },
-  { name: "Транспорт", value: 180 },
-  { name: "Розваги", value: 240 },
-  { name: "Комуналка", value: 300 },
-  { name: "Інше", value: 519.5 },
-];
-
-const categories: ICategory[] = [
-  {
-    id: 1,
-    name: "Їжа",
-    color: "#4F46E5",
-    amount: 420,
-  },
-  {
-    id: 2,
-    name: "Транспорт",
-    color: "#06B6D4",
-    amount: 180,
-  },
-];
-
 export default function Home() {
-  const { dashboard, dashboardStatus } = useOutletContext<IContextMain>();
+  const { dashboard, dashboardStatus, categories, categoriesStatus } =
+    useOutletContext<IContextMain>();
   const [isOpenCreateTransactionModal, setIsOpenCreateTransactionModal] =
     useState(false);
 
@@ -62,6 +37,7 @@ export default function Home() {
 
   console.log(dashboard);
   console.log(dashboardStatus);
+  console.log(categories);
 
   return (
     <>
@@ -164,44 +140,71 @@ export default function Home() {
               <div className="text-xs text-gray-500">Цей місяць</div>
             </div>
 
-            <div style={{ height: 180 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={mockCategoryData}
-                    dataKey="value"
-                    nameKey="name"
-                    outerRadius={70}
-                    innerRadius={30}
-                    paddingAngle={2}
-                  >
-                    {mockCategoryData.map((_, idx) => (
-                      <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              {mockCategoryData.map((c, i) => (
-                <div key={c.name} className="flex items-center gap-2">
-                  <div
-                    style={{
-                      width: 10,
-                      height: 10,
-                      background: COLORS[i % COLORS.length],
-                    }}
-                    className="rounded"
-                  />
-                  <div>
-                    <div className="font-semibold">{c.name}</div>
-                    <div className="text-xs text-gray-500">{c.value} ₴</div>
-                  </div>
+            {categoriesStatus === "loading" ? (
+              <div
+                className="flex items-center justify-center"
+                style={{ height: 180 }}
+              >
+                {renderSkeletonLoading()}
+              </div>
+            ) : categoriesStatus === "succeeded" && categories?.length > 0 ? (
+              <>
+                <div style={{ height: 180 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={categories
+                          .filter((c) => parseFloat(c.amount) > 0)
+                          .map((c) => ({
+                            ...c,
+                            amount: parseFloat(c.amount),
+                          }))}
+                        dataKey="amount"
+                        nameKey="name"
+                        outerRadius={70}
+                        innerRadius={30}
+                        paddingAngle={2}
+                      >
+                        {categories
+                          .filter((c) => parseFloat(c.amount) > 0)
+                          .map((c) => (
+                            <Cell key={c.name} fill={c.color} />
+                          ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
-              ))}
-            </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                  {categories.map((c) => (
+                    <div key={c.name} className="flex items-center gap-2">
+                      <div
+                        style={{
+                          width: 10,
+                          height: 10,
+                          background: c.color,
+                        }}
+                        className="rounded"
+                      />
+                      <div>
+                        <div className="font-semibold">{c.name}</div>
+                        <div className="text-xs text-gray-500">
+                          {c.amount} ₴
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div
+                className="flex items-center justify-center text-gray-500"
+                style={{ height: 180 }}
+              >
+                Немає даних
+              </div>
+            )}
           </div>
         </div>
       </div>

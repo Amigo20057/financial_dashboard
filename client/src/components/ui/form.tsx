@@ -107,6 +107,11 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
                     value: 50,
                     message: "Name must not exceed 50 characters",
                   },
+                  validate: {
+                    hasTwoWords: (value) =>
+                      value.trim().split(" ").length >= 2 ||
+                      "Full name must contain at least first and last name",
+                  },
                 })}
                 placeholder="John Doe"
                 className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400 ${

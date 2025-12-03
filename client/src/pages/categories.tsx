@@ -19,7 +19,7 @@ import {
   createCategory,
   deleteCategory,
   updateCategory,
-} from "../redux/slices/category.slise";
+} from "../redux/slices/category.slice";
 
 export default function Categories() {
   const { categories, categoriesStatus } = useOutletContext<IContextMain>();
