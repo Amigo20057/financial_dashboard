@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Space, Card } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   ResponsiveContainer,
   BarChart,
@@ -20,6 +20,7 @@ import {
   deleteCategory,
   updateCategory,
 } from "../redux/slices/category.slice";
+import CommonButton from "../components/ui/common-btn";
 
 export default function Categories() {
   const { categories, categoriesStatus } = useOutletContext<IContextMain>();
@@ -44,7 +45,7 @@ export default function Categories() {
         id: Date.now(),
         name,
         color,
-        amount: 0,
+        amount: "0",
       };
       dispatch(createCategory(newCategory));
     }
@@ -80,14 +81,20 @@ export default function Categories() {
             Керуйте категоріями для відстеження витрат
           </p>
         </div>
-        <Button
+        {/* <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={openCreateModal}
           size="large"
         >
           Створити категорію
-        </Button>
+        </Button> */}
+        <CommonButton
+          text="+ Створити категорію"
+          onClickEvent={openCreateModal}
+          variantStyles="purple"
+          customStyles="!h-[50px]"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">

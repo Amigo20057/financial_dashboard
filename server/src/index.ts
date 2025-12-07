@@ -7,6 +7,7 @@ import { userRouter } from "./models/user/user.controller";
 import cors from "cors";
 import { dashBoardRouter } from "./models/dashboard/dashboard.controller";
 import { categoryRouter } from "./models/category/category.controller";
+import { transactionRouter } from "./models/transaction/transaction.controller";
 
 const port = process.env.APPLICATION_PORT;
 
@@ -32,6 +33,7 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/dashboard", dashBoardRouter);
 app.use("/category", categoryRouter);
+app.use("/transaction", transactionRouter);
 
 app.listen(port, async (err) => {
   await initDB();

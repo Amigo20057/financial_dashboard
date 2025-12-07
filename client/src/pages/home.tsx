@@ -47,7 +47,7 @@ export default function Home() {
             <h1 className="text-[26px]">Огляд фінансів</h1>
             <p>Статистика та аналітика за вашими транзакціями</p>
           </div>
-          <div className="flex">
+          <div className="flex items-center">
             <div className="mr-5 flex flex-col justify-around">
               <p className="text-end">Баланс</p>
               {dashboardStatus === "loading" ? (
@@ -57,6 +57,7 @@ export default function Home() {
               )}
             </div>
             <CommonButton
+              customStyles="!h-[50px]"
               onClickEvent={() => setIsOpenCreateTransactionModal(true)}
               text="+ Додати транзакцію"
             />

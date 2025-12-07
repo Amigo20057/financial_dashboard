@@ -4,11 +4,13 @@ import type { UnknownAction } from "@reduxjs/toolkit";
 import { dashBoardSlice } from "./slices/dashboard.slice";
 import { logoutUser, userSlice } from "./slices/user.slice";
 import { categorySlice } from "./slices/category.slice";
+import { transactionSlice } from "./slices/transaction.slice";
 
 const appReducer = combineReducers({
   dashboard: dashBoardSlice.reducer,
   user: userSlice.reducer,
   category: categorySlice.reducer,
+  transaction: transactionSlice.reducer,
 });
 
 export type AppState = ReturnType<typeof appReducer>;

@@ -1,13 +1,14 @@
 import { XOutlined } from "@ant-design/icons";
 import { useForm } from "react-hook-form";
 import type { ICategory } from "../../types/category.interface";
+import { createTransaction } from "../../redux/slices/transaction.slice";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
 
 interface IFormData {
   type: "income" | "expense";
-  category: string;
+  categoryId: number;
   amount: number;
-  date: string;
-  description: string;
+  description?: string;
 }
 
 interface Props {
@@ -19,19 +20,28 @@ export default function CreateTransactionModal({ onClose, categories }: Props) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<IFormData>({
     defaultValues: {
       type: "expense",
-      category: categories[0]?.name || "",
-      amount: 0,
-      date: new Date().toISOString().split("T")[0],
+      categoryId: categories[0]?.id,
       description: "",
     },
   });
+  const dispatch = useAppDispatch();
+  const selectedType = watch("type");
 
-  const submit = async (data: IFormData) => {
-    console.log("Submitted data:", data);
+  const submit = (data: IFormData) => {
+    data.amount = Number(data.amount);
+    const payload = {
+      ...data,
+      categoryId: data.type === "expense" ? data.categoryId : undefined,
+    };
+
+    console.log("Submitted payload:", payload);
+
+    dispatch(createTransaction(payload));
     onClose();
   };
 
@@ -80,32 +90,33 @@ export default function CreateTransactionModal({ onClose, categories }: Props) {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Категорія
-            </label>
-            <select
-              {...register("category", {
-                required: "Оберіть категорію",
-              })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            >
-              {categories.length === 0 ? (
-                <option value="">Ви не створили жодної категорії</option>
-              ) : (
-                categories.map((cat) => (
-                  <option key={cat.id} value={cat.name}>
+          {selectedType === "expense" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Категорія
+              </label>
+              <select
+                {...register("categoryId", {
+                  required:
+                    selectedType === "expense" ? "Оберіть категорію" : false,
+                  valueAsNumber: true,
+                })}
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              >
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
-                ))
+                ))}
+              </select>
+
+              {errors.categoryId && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.categoryId.message}
+                </p>
               )}
-            </select>
-            {errors.category && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.category.message}
-              </p>
-            )}
-          </div>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -118,6 +129,7 @@ export default function CreateTransactionModal({ onClose, categories }: Props) {
                 {...register("amount", {
                   required: "Введіть суму",
                   min: { value: 0.01, message: "Сума повинна бути більше 0" },
+                  valueAsNumber: true,
                 })}
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 placeholder="0.00"
@@ -135,28 +147,12 @@ export default function CreateTransactionModal({ onClose, categories }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Дата
-            </label>
-            <input
-              type="date"
-              {...register("date", {
-                required: "Оберіть дату",
-              })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
-            {errors.date && (
-              <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
               Опис (необов'язково)
             </label>
             <textarea
               {...register("description")}
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
               placeholder="Додайте коментар до транзакції..."
             />
           </div>

@@ -1,22 +1,16 @@
 import type { IBase, RequestStatus } from "./global.interface";
 
-export interface ITransactions extends IBase {
-  userId: string;
-  categoryId: string;
-  title: string;
-  amount: number;
-  type: "income" | "expanse";
-  date: Date;
+export interface ITransaction extends IBase {
+  user_id?: string;
+  category_id?: string;
+  type: "income" | "expense";
+  description?: string;
 }
 
-export interface IBudgets {
-  id: number;
-  userId: string;
-  month: number;
-  year: number;
-  limitAmount: number;
-  createdAt: Date;
-  updatedAt: Date;
+export interface ITransactionState {
+  value: ITransaction | object;
+  status: RequestStatus;
+  error: string | null;
 }
 
 export interface IDashboard {
