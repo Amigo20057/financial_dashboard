@@ -9,6 +9,7 @@ import type { IUser } from "../types/user.interface";
 import type { IDashboard } from "../types/dashboard.interface";
 import { fetchDashboard } from "../redux/slices/dashboard.slice";
 import { fetchCategories } from "../redux/slices/category.slice";
+// import { fetchTransactions } from "../redux/slices/transaction.slice";
 import type { ICategory } from "../types/category.interface";
 
 export default function MainLayout() {
@@ -28,6 +29,13 @@ export default function MainLayout() {
     (state: RootState) => state.category.status
   );
 
+  // const transactions = useAppSelector(
+  //   (state: RootState) => state.transaction.value
+  // );
+  // const transactionStatus = useAppSelector(
+  //   (state: RootState) => state.transaction.status
+  // );
+
   useEffect(() => {
     if (userStatus === "idle") {
       dispatch(fetchUser());
@@ -38,17 +46,26 @@ export default function MainLayout() {
     if (userStatus === "succeeded") {
       if (dashboardStatus === "idle") dispatch(fetchDashboard());
       if (categoryStatus === "idle") dispatch(fetchCategories());
+      // if (transactionStatus === "idle") dispatch(fetchTransactions());
     }
 
     if (userStatus === "failed") {
       navigate("/auth/login");
     }
-  }, [userStatus, dashboardStatus, categoryStatus, dispatch, navigate]);
+  }, [
+    userStatus,
+    dashboardStatus,
+    categoryStatus,
+    // transactionStatus,
+    dispatch,
+    navigate,
+  ]);
 
   const isLoading =
     userStatus === "loading" ||
     dashboardStatus === "loading" ||
     categoryStatus === "loading";
+  // transactionStatus === "loading";
 
   if (isLoading) {
     return (
@@ -65,6 +82,8 @@ export default function MainLayout() {
     dashboardStatus,
     categories: categories as ICategory[],
     categoriesStatus: categoryStatus,
+    // transactions: transactions as ITransaction[],
+    // transactionStatus: transactionStatus,
   };
 
   return (

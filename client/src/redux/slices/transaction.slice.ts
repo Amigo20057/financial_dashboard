@@ -24,6 +24,41 @@ export const createTransaction = createAsyncThunk(
   }
 );
 
+export const fetchTransactions = createAsyncThunk(
+  "transaction/fetchAll",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/transaction/params`,
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Error fetch all transactions: ", error);
+    }
+  }
+);
+
+export const getTransactionDataForGraphic = createAsyncThunk(
+  "transaction/graphic",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/transaction/params`,
+        {
+          params: { lastDays: 30 },
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      console.log("Error get transactions for graphic: ", error);
+    }
+  }
+);
+
 const initialState: ITransactionState = {
   value: {},
   status: "idle",
@@ -44,6 +79,18 @@ export const transactionSlice = createSlice({
         state.value = action.payload;
       })
       .addCase(createTransaction.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Unknown error";
+      })
+
+      .addCase(getTransactionDataForGraphic.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getTransactionDataForGraphic.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.value = action.payload;
+      })
+      .addCase(getTransactionDataForGraphic.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Unknown error";
       });

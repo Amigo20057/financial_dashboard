@@ -12,24 +12,68 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateTransactionModal from "../components/ui/create-transaction-modal";
-
-const mockLineData = [
-  { date: "01 Oct", income: 200, expenses: 150 },
-  { date: "05 Oct", income: 0, expenses: 60 },
-  { date: "10 Oct", income: 1200, expenses: 300 },
-  { date: "15 Oct", income: 800, expenses: 500 },
-  { date: "20 Oct", income: 0, expenses: 200 },
-  { date: "25 Oct", income: 1000, expenses: 349.5 },
-  { date: "30 Oct", income: 0, expenses: 100 },
-];
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { getTransactionDataForGraphic } from "../redux/slices/transaction.slice";
+import type { IChartData, IGroupedData } from "../types/dashboard.interface";
 
 export default function Home() {
   const { dashboard, dashboardStatus, categories, categoriesStatus } =
     useOutletContext<IContextMain>();
   const [isOpenCreateTransactionModal, setIsOpenCreateTransactionModal] =
     useState(false);
+  const [lineData, setLineData] = useState<IChartData[]>([]);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await dispatch(getTransactionDataForGraphic());
+      console.log(res.payload);
+
+      if (res.payload && Array.isArray(res.payload)) {
+        const groupedByDate = res.payload.reduce((acc, transaction) => {
+          const originalDate = new Date(transaction.date);
+          const dateKey = originalDate.toISOString().split("T")[0];
+
+          const formattedDate = originalDate.toLocaleDateString("uk-UA", {
+            day: "2-digit",
+            month: "short",
+          });
+
+          if (!acc[dateKey]) {
+            acc[dateKey] = {
+              date: formattedDate,
+              timestamp: originalDate.getTime(),
+              income: 0,
+              expenses: 0,
+            };
+          }
+
+          const amount = parseFloat(transaction.amount);
+          if (transaction.type === "income") {
+            acc[dateKey].income += amount;
+          } else if (transaction.type === "expense") {
+            acc[dateKey].expenses += amount;
+          }
+
+          return acc;
+        }, {} as Record<string, IGroupedData>);
+
+        const chartData: IChartData[] = (
+          Object.values(groupedByDate) as IGroupedData[]
+        )
+          .sort((a, b) => a.timestamp - b.timestamp)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .map(({ timestamp, ...rest }): IChartData => rest as IChartData);
+
+        setLineData(chartData);
+        console.log("Chart data:", chartData);
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   const renderSkeletonLoading = () => {
     return <>....</>;
@@ -90,7 +134,7 @@ export default function Home() {
             </div>
             <div style={{ height: 240 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={mockLineData}>
+                <AreaChart data={lineData.length > 0 ? lineData : []}>
                   <defs>
                     <linearGradient
                       id="colorIncome"

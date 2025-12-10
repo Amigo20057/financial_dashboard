@@ -6,3 +6,7 @@ export interface ITransaction extends IBase {
   type: "income" | "expense";
   description?: string;
 }
+
+export interface TransactionParams {
+  lastDays: string;
+}

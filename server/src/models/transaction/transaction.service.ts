@@ -1,5 +1,8 @@
 import { pool } from "../../db/pool";
-import { ITransaction } from "../../types/transaction.interface";
+import {
+  ITransaction,
+  TransactionParams,
+} from "../../types/transaction.interface";
 import {
   findCategoryById,
   increaseAmountCategory,
@@ -45,4 +48,34 @@ export async function createTransaction(data: {
   }
 
   return created;
+}
+
+export async function getTransactions(userId: string): Promise<ITransaction[]> {
+  const result = await pool.query(
+    "SELECT * FROM public.transactions WHERE user_id = $1",
+    [userId]
+  );
+  return result.rows;
+}
+
+export async function getTransactionsByParams(
+  userId: string,
+  params: Record<string, any>
+) {
+  const { lastDays } = params as TransactionParams;
+  let query = "";
+  if (lastDays) {
+    query = `AND date >= NOW() - INTERVAL '${lastDays} days'`;
+  }
+  const result = await pool.query(
+    `
+      SELECT *
+      FROM public.transactions
+      WHERE user_id = $1
+      ${query}
+      ORDER BY date DESC
+    `,
+    [userId]
+  );
+  return result.rows;
 }

@@ -5,6 +5,17 @@ export interface ITransaction extends IBase {
   category_id?: string;
   type: "income" | "expense";
   description?: string;
+  date: Date;
+}
+
+export interface IChartData {
+  date: string;
+  income: string;
+  expense: string;
+}
+
+export interface IGroupedData {
+  timestamp: number;
 }
 
 export interface ITransactionState {
