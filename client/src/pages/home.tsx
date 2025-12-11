@@ -43,8 +43,6 @@ export default function Home() {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const dispatch = useAppDispatch();
 
-  console.log(dashboard);
-
   const getCategoryById = (categoryId: number | string | undefined) => {
     if (!categoryId) return undefined;
     const id =
@@ -70,8 +68,6 @@ export default function Home() {
       const res = await dispatch(getTransactionDataForGraphic());
       const transactionsRes = await dispatch(fetchTransactions({ limit: 10 }));
       setTransactions(transactionsRes.payload);
-      console.log(res.payload);
-      console.log("TRANSACTIONS: ", transactionsRes.payload);
 
       if (res.payload && Array.isArray(res.payload)) {
         const groupedByDate = res.payload.reduce((acc, transaction) => {
@@ -122,9 +118,6 @@ export default function Home() {
 
           setMaxIncome(totalIncome);
           setMaxExpense(totalExpense);
-
-          console.log("INCOME:", totalIncome);
-          console.log("EXPENSE:", totalExpense);
         }
 
         if (chartData.length > 0) {
@@ -156,10 +149,6 @@ export default function Home() {
     return <>....</>;
   };
 
-  console.log(dashboard);
-  console.log(dashboardStatus);
-  console.log(categories);
-
   return (
     <>
       <div>
@@ -187,15 +176,17 @@ export default function Home() {
         <div className="mt-5 mb-5 w-full flex">
           <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
             <p>Дохід за місяць</p>
-            <h1 className="text-[24px] font-bold text-black">{maxIncome}$</h1>
+            <h1 className="text-[24px] !font-bold text-black">{maxIncome}$</h1>
           </div>
           <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
             <p>Витрати за місяць</p>
-            <h1 className="text-[24px] font-bold text-black">{maxExpense}$</h1>
+            <h1 className="text-[24px] !font-bold text-black">{maxExpense}$</h1>
           </div>
           <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
             <p>Коеф. заощаджень</p>
-            <h1 className="text-[24px] font-bold text-black">{savingsRate}%</h1>
+            <h1 className="text-[24px] !font-bold text-black">
+              {savingsRate}%
+            </h1>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
@@ -325,13 +316,11 @@ export default function Home() {
           </div>
         </div>
         <div className="bg-white p-4 rounded-2xl shadow flex flex-col max-h-[300px]">
-          {/* Header */}
           <div className="flex items-center justify-between mb-2 flex-shrink-0">
             <div className="font-semibold">Операції</div>
             <div className="text-xs text-gray-500">10 останніх</div>
           </div>
 
-          {/* List container */}
           <div className="flex-1 overflow-y-auto pr-2">
             {transactions.length === 0 ? (
               <Empty description="Немає транзакцій" />
@@ -344,7 +333,7 @@ export default function Home() {
 
                   return (
                     <Card
-                      className="mb-4 rounded-xl shadow-sm border-l-4"
+                      className="!mb-4 rounded-xl shadow-sm border-l-4"
                       style={{
                         borderLeftColor: category?.color || "#d9d9d9",
                       }}

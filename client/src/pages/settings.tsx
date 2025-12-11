@@ -93,7 +93,7 @@ export default function Settings() {
           <div className="mt-8">
             <button
               onClick={() => setIsOpenModal(true)}
-              className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-700 transition shadow-sm"
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 !text-white font-medium text-sm hover:bg-indigo-700 transition shadow-sm"
             >
               Редагувати профіль
             </button>

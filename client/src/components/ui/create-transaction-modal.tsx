@@ -1,8 +1,13 @@
 import { XOutlined } from "@ant-design/icons";
 import { useForm } from "react-hook-form";
 import type { ICategory } from "../../types/category.interface";
-import { createTransaction } from "../../redux/slices/transaction.slice";
+import {
+  createTransaction,
+  fetchTransactions,
+} from "../../redux/slices/transaction.slice";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { fetchUser } from "../../redux/slices/user.slice";
+import { fetchDashboard } from "../../redux/slices/dashboard.slice";
 
 interface IFormData {
   type: "income" | "expense";
@@ -32,17 +37,26 @@ export default function CreateTransactionModal({ onClose, categories }: Props) {
   const dispatch = useAppDispatch();
   const selectedType = watch("type");
 
-  const submit = (data: IFormData) => {
+  const submit = async (data: IFormData) => {
     data.amount = Number(data.amount);
     const payload = {
       ...data,
       categoryId: data.type === "expense" ? data.categoryId : undefined,
     };
 
-    console.log("Submitted payload:", payload);
+    try {
+      await dispatch(createTransaction(payload)).unwrap();
 
-    dispatch(createTransaction(payload));
-    onClose();
+      await Promise.all([
+        dispatch(fetchUser()),
+        dispatch(fetchDashboard()),
+        dispatch(fetchTransactions()),
+      ]);
+
+      onClose();
+    } catch (error) {
+      console.error("Failed to create transaction:", error);
+    }
   };
 
   return (
@@ -167,7 +181,7 @@ export default function CreateTransactionModal({ onClose, categories }: Props) {
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition shadow-sm"
+              className="px-5 py-2 rounded-xl bg-indigo-600 !text-white font-medium hover:bg-indigo-700 transition shadow-sm"
             >
               Зберегти
             </button>

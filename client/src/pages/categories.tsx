@@ -19,42 +19,54 @@ import {
   createCategory,
   deleteCategory,
   updateCategory,
+  fetchCategories,
 } from "../redux/slices/category.slice";
 import CommonButton from "../components/ui/common-btn";
 
 export default function Categories() {
-  const { categories, categoriesStatus } = useOutletContext<IContextMain>();
+  const { categories } = useOutletContext<IContextMain>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<ICategory | null>(
     null
   );
   const dispatch = useAppDispatch();
 
-  console.log("status: ", categoriesStatus);
-  console.log("Categories from context:", categories);
-
   if (!Array.isArray(categories)) {
     return <div>Loading...</div>;
   }
 
-  const handleSave = (name: string, color: string) => {
-    if (editingCategory) {
-      dispatch(updateCategory({ id: editingCategory.id, name, color }));
-    } else {
-      const newCategory: ICategory = {
-        id: Date.now(),
-        name,
-        color,
-        amount: "0",
-      };
-      dispatch(createCategory(newCategory));
+  const handleSave = async (name: string, color: string) => {
+    try {
+      if (editingCategory) {
+        await dispatch(
+          updateCategory({ id: editingCategory.id, name, color })
+        ).unwrap();
+      } else {
+        const newCategory: ICategory = {
+          id: Date.now(),
+          name,
+          color,
+          amount: "0",
+        };
+        await dispatch(createCategory(newCategory)).unwrap();
+      }
+
+      await dispatch(fetchCategories());
+
+      setIsModalOpen(false);
+      setEditingCategory(null);
+    } catch (error) {
+      console.error("Failed to save category:", error);
     }
-    setIsModalOpen(false);
-    setEditingCategory(null);
   };
 
-  const handleDelete = (id: number) => {
-    dispatch(deleteCategory(id));
+  const handleDelete = async (id: number) => {
+    try {
+      await dispatch(deleteCategory(id)).unwrap();
+      await dispatch(fetchCategories());
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+    }
   };
 
   const handleEdit = (category: ICategory) => {
@@ -81,14 +93,6 @@ export default function Categories() {
             Керуйте категоріями для відстеження витрат
           </p>
         </div>
-        {/* <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={openCreateModal}
-          size="large"
-        >
-          Створити категорію
-        </Button> */}
         <CommonButton
           text="+ Створити категорію"
           onClickEvent={openCreateModal}

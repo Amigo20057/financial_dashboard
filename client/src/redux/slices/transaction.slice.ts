@@ -55,7 +55,7 @@ export const getTransactionDataForGraphic = createAsyncThunk(
       );
       return response.data;
     } catch (error: unknown) {
-      console.log("Error get transactions for graphic: ", error);
+      console.error("Error get transactions for graphic: ", error);
     }
   }
 );

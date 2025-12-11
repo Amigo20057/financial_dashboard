@@ -61,7 +61,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-2xl font-bold !text-gray-900">
           {type === "register" ? "Create Account" : "Welcome Back"}
         </h2>
         <p className="text-gray-600 text-sm mt-1">
@@ -114,7 +114,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
                   },
                 })}
                 placeholder="John Doe"
-                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400 ${
+                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 !text-gray-900 placeholder-gray-400 ${
                   errors.fullName
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                     : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
@@ -186,7 +186,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
                   },
                 })}
                 placeholder="john@example.com"
-                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400 ${
+                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 !text-gray-900 placeholder-gray-400 ${
                   errors.email
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                     : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
@@ -262,7 +262,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
                   },
                 })}
                 placeholder="••••••••"
-                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400 ${
+                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 !text-gray-900 placeholder-gray-400 ${
                   errors.password
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                     : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
@@ -338,7 +338,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
                   },
                 })}
                 placeholder="john@example.com"
-                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400 ${
+                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 !text-gray-900 placeholder-gray-400 ${
                   errors.email
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                     : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
@@ -412,7 +412,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
                   },
                 })}
                 placeholder="••••••••"
-                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400 ${
+                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-4 outline-none transition-all duration-200 !text-gray-900 placeholder-gray-400 ${
                   errors.password
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                     : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
