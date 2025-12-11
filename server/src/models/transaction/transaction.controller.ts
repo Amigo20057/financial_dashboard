@@ -37,7 +37,7 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
 
 router.get("/params", authMiddleware, async (req: Request, res: Response) => {
   try {
-    const transactions = await getTransactionsByParams(req.user.id, req.params);
+    const transactions = await getTransactionsByParams(req.user.id, req.query);
     res.status(200).json(transactions);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

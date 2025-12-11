@@ -88,13 +88,11 @@ export default function MainLayout() {
 
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-900">
-      <div className="p-3 h-screen mx-auto">
-        <div className="flex gap-6 h-full ">
-          <Sidebar />
-          <main className="flex-1">
-            <Outlet context={context} />
-          </main>
-        </div>
+      <div className="flex h-screen p-3 mx-auto gap-6">
+        <Sidebar />
+        <main className="flex-1">
+          <Outlet context={context} />
+        </main>
       </div>
     </div>
   );

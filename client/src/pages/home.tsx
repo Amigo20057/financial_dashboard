@@ -15,8 +15,21 @@ import {
 import { useEffect, useState } from "react";
 import CreateTransactionModal from "../components/ui/create-transaction-modal";
 import { useAppDispatch } from "../hooks/useAppDispatch";
-import { getTransactionDataForGraphic } from "../redux/slices/transaction.slice";
-import type { IChartData, IGroupedData } from "../types/dashboard.interface";
+import {
+  fetchTransactions,
+  getTransactionDataForGraphic,
+} from "../redux/slices/transaction.slice";
+import type {
+  IChartData,
+  IGroupedData,
+  ITransaction,
+} from "../types/dashboard.interface";
+import { Card, Empty, List, Tag } from "antd";
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
 
 export default function Home() {
   const { dashboard, dashboardStatus, categories, categoriesStatus } =
@@ -24,12 +37,41 @@ export default function Home() {
   const [isOpenCreateTransactionModal, setIsOpenCreateTransactionModal] =
     useState(false);
   const [lineData, setLineData] = useState<IChartData[]>([]);
+  const [maxIncome, setMaxIncome] = useState(0);
+  const [maxExpense, setMaxExpense] = useState(0);
+  const [savingsRate, setSavingsRate] = useState(0);
+  const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const dispatch = useAppDispatch();
+
+  console.log(dashboard);
+
+  const getCategoryById = (categoryId: number | string | undefined) => {
+    if (!categoryId) return undefined;
+    const id =
+      typeof categoryId === "string" ? parseInt(categoryId, 10) : categoryId;
+    return categories?.find((cat) => cat.id === id);
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("uk-UA", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const formatAmount = (amount: string) => {
+    return parseFloat(amount).toFixed(2);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await dispatch(getTransactionDataForGraphic());
+      const transactionsRes = await dispatch(fetchTransactions({ limit: 10 }));
+      setTransactions(transactionsRes.payload);
       console.log(res.payload);
+      console.log("TRANSACTIONS: ", transactionsRes.payload);
 
       if (res.payload && Array.isArray(res.payload)) {
         const groupedByDate = res.payload.reduce((acc, transaction) => {
@@ -68,12 +110,47 @@ export default function Home() {
           .map(({ timestamp, ...rest }): IChartData => rest as IChartData);
 
         setLineData(chartData);
-        console.log("Chart data:", chartData);
+
+        if (chartData.length > 0) {
+          const totalIncome = chartData.reduce((sum, item) => {
+            return sum + Number(item.income);
+          }, 0);
+
+          const totalExpense = chartData.reduce((sum, item) => {
+            return sum + Number(item.expenses);
+          }, 0);
+
+          setMaxIncome(totalIncome);
+          setMaxExpense(totalExpense);
+
+          console.log("INCOME:", totalIncome);
+          console.log("EXPENSE:", totalExpense);
+        }
+
+        if (chartData.length > 0) {
+          const totalIncome = chartData.reduce((sum, item) => {
+            return sum + Number(item.income);
+          }, 0);
+
+          const totalExpense = chartData.reduce((sum, item) => {
+            return sum + Number(item.expenses);
+          }, 0);
+
+          setMaxIncome(totalIncome);
+          setMaxExpense(totalExpense);
+
+          if (totalIncome > 0) {
+            const rate = ((totalIncome - totalExpense) / totalIncome) * 100;
+            setSavingsRate(Math.round(rate));
+          } else {
+            setSavingsRate(0);
+          }
+        }
       }
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, savingsRate]);
 
   const renderSkeletonLoading = () => {
     return <>....</>;
@@ -110,20 +187,15 @@ export default function Home() {
         <div className="mt-5 mb-5 w-full flex">
           <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
             <p>Дохід за місяць</p>
-            <h1 className="text-[24px] font-bold text-black">4.200$</h1>
-            <p>Порівняно з попереднім місяцем +12%</p>
+            <h1 className="text-[24px] font-bold text-black">{maxIncome}$</h1>
           </div>
           <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
             <p>Витрати за місяць</p>
-            <h1 className="text-[24px] font-bold text-black">1.100$</h1>
-            <p>
-              Ліміт: 2000$ - <span className="text-red-500">Перевищено</span>
-            </p>
+            <h1 className="text-[24px] font-bold text-black">{maxExpense}$</h1>
           </div>
           <div className="min-w-[350px] shadow-md p-[20px] rounded-2xl mr-[20px]">
             <p>Коеф. заощаджень</p>
-            <h1 className="text-[24px] font-bold text-black">38%</h1>
-            <p>Порада: зменшити витрати на розваги</p>
+            <h1 className="text-[24px] font-bold text-black">{savingsRate}%</h1>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
@@ -249,6 +321,88 @@ export default function Home() {
               >
                 Немає даних
               </div>
+            )}
+          </div>
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow flex flex-col max-h-[300px]">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-2 flex-shrink-0">
+            <div className="font-semibold">Операції</div>
+            <div className="text-xs text-gray-500">10 останніх</div>
+          </div>
+
+          {/* List container */}
+          <div className="flex-1 overflow-y-auto pr-2">
+            {transactions.length === 0 ? (
+              <Empty description="Немає транзакцій" />
+            ) : (
+              <List
+                dataSource={transactions}
+                renderItem={(transaction) => {
+                  const category = getCategoryById(transaction.category_id);
+                  const isIncome = transaction.type === "income";
+
+                  return (
+                    <Card
+                      className="mb-4 rounded-xl shadow-sm border-l-4"
+                      style={{
+                        borderLeftColor: category?.color || "#d9d9d9",
+                      }}
+                      bodyStyle={{ padding: "20px" }}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl"
+                            style={{
+                              backgroundColor: category?.color || "#d9d9d9",
+                            }}
+                          >
+                            {isIncome ? (
+                              <ArrowUpOutlined />
+                            ) : (
+                              <ArrowDownOutlined />
+                            )}
+                          </div>
+
+                          <div>
+                            <div className="text-base font-semibold mb-1">
+                              {category?.name || "Без категорії"}
+                            </div>
+                            <div className="text-xs text-gray-400 flex items-center gap-1">
+                              <CalendarOutlined />
+                              {formatDate(transaction.date)}
+                            </div>
+                            {transaction.description && (
+                              <div className="text-xs text-gray-600 mt-1">
+                                {transaction.description}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div
+                            className={`text-lg font-bold ${
+                              isIncome ? "text-green-500" : "text-red-500"
+                            }`}
+                          >
+                            {isIncome ? "+" : "-"} ₴
+                            {formatAmount(transaction.amount)}
+                          </div>
+
+                          <Tag
+                            color={isIncome ? "success" : "error"}
+                            className="mt-2"
+                          >
+                            {isIncome ? "Дохід" : "Витрата"}
+                          </Tag>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                }}
+              />
             )}
           </div>
         </div>

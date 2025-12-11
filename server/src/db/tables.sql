@@ -52,7 +52,6 @@ CREATE TABLE IF NOT EXISTS dashboard (
     id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     balance NUMERIC(10,2) DEFAULT 0,
-    saving_rate NUMERIC(5,2),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );

@@ -7,43 +7,52 @@ import Login from "./pages/login";
 import NotFound from "./pages/not-found";
 import Settings from "./pages/settings";
 import Categories from "./pages/categories";
+import Transactions from "./pages/transactions";
+
+const mainLayoutRoutes = [
+  {
+    index: true,
+    element: <Navigate to="/dashboard" replace />,
+  },
+  {
+    path: "dashboard",
+    element: <Home />,
+  },
+  {
+    path: "settings",
+    element: <Settings />,
+  },
+  {
+    path: "categories",
+    element: <Categories />,
+  },
+  {
+    path: "transactions",
+    element: <Transactions />,
+  },
+];
+
+const authLayoutRoutes = [
+  {
+    path: "/auth/register",
+    element: <Register />,
+  },
+  {
+    path: "/auth/login",
+    element: <Login />,
+  },
+];
 
 const routes: RouteObject[] = [
   {
     path: "/",
     element: <MainLayout />,
-    children: [
-      {
-        index: true,
-        element: <Navigate to="/dashboard" replace />,
-      },
-      {
-        path: "dashboard",
-        element: <Home />,
-      },
-      {
-        path: "settings",
-        element: <Settings />,
-      },
-      {
-        path: "categories",
-        element: <Categories />,
-      },
-    ],
+    children: mainLayoutRoutes,
   },
   {
     path: "/auth",
     element: <AuthLayout />,
-    children: [
-      {
-        path: "/auth/register",
-        element: <Register />,
-      },
-      {
-        path: "/auth/login",
-        element: <Login />,
-      },
-    ],
+    children: authLayoutRoutes,
   },
   {
     path: "*",

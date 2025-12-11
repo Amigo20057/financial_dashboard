@@ -5,13 +5,14 @@ export interface ITransaction extends IBase {
   category_id?: string;
   type: "income" | "expense";
   description?: string;
-  date: Date;
+  amount: string;
+  date: string;
 }
 
 export interface IChartData {
   date: string;
   income: string;
-  expense: string;
+  expenses: string;
 }
 
 export interface IGroupedData {
@@ -28,7 +29,6 @@ export interface IDashboard {
   id: number;
   userId: string;
   balance: number;
-  savingRate: number;
   createdAt: Date;
   updatedAt: Date;
 }

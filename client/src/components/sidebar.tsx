@@ -9,7 +9,7 @@ export default function Sidebar() {
   const sidebarBts = [
     { text: "Дашборд", path: "/dashboard" },
     { text: "Категорії", path: "/categories" },
-    { text: "Операції", path: "/operations" },
+    { text: "Операції", path: "/transactions" },
     { text: "Звіти", path: "/reports" },
     { text: "Налаштування", path: "/settings" },
   ];
@@ -20,8 +20,8 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="min-w-72 bg-white rounded-2xl shadow p-4 flex flex-col gap-6 h-full">
-      <div className="flex items-center gap-3">
+    <aside className="w-72 bg-white rounded-2xl shadow p-4 flex flex-col h-full">
+      <div className="flex items-center gap-3 mb-[5px]">
         <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-400 rounded-full flex items-center justify-center text-white font-bold">
           FD
         </div>

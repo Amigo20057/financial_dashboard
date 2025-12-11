@@ -1,8 +1,5 @@
 import { pool } from "../../db/pool";
-import {
-  ITransaction,
-  TransactionParams,
-} from "../../types/transaction.interface";
+import { ITransaction } from "../../types/transaction.interface";
 import {
   findCategoryById,
   increaseAmountCategory,
@@ -62,11 +59,16 @@ export async function getTransactionsByParams(
   userId: string,
   params: Record<string, any>
 ) {
-  const { lastDays } = params as TransactionParams;
+  const lastDays = Number(params.lastDays);
+  const limit = Number(params.limit);
+  const limitClause = !isNaN(limit) && limit > 0 ? `LIMIT ${limit}` : "";
+
   let query = "";
-  if (lastDays) {
+
+  if (!isNaN(lastDays) && lastDays > 0) {
     query = `AND date >= NOW() - INTERVAL '${lastDays} days'`;
   }
+
   const result = await pool.query(
     `
       SELECT *
@@ -74,6 +76,7 @@ export async function getTransactionsByParams(
       WHERE user_id = $1
       ${query}
       ORDER BY date DESC
+      ${limitClause}
     `,
     [userId]
   );

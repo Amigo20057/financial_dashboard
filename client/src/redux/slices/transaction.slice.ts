@@ -26,12 +26,13 @@ export const createTransaction = createAsyncThunk(
 
 export const fetchTransactions = createAsyncThunk(
   "transaction/fetchAll",
-  async () => {
+  async (params?: { lastDays?: number; limit?: number }) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/transaction/params`,
         {
           withCredentials: true,
+          params: params,
         }
       );
       return response.data;
@@ -91,6 +92,18 @@ export const transactionSlice = createSlice({
         state.value = action.payload;
       })
       .addCase(getTransactionDataForGraphic.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Unknown error";
+      })
+
+      .addCase(fetchTransactions.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchTransactions.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.value = action.payload;
+      })
+      .addCase(fetchTransactions.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Unknown error";
       });
