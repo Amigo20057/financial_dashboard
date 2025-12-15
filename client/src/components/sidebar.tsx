@@ -10,7 +10,6 @@ export default function Sidebar() {
     { text: "Дашборд", path: "/dashboard" },
     { text: "Категорії", path: "/categories" },
     { text: "Операції", path: "/transactions" },
-    { text: "Звіти", path: "/reports" },
     { text: "Налаштування", path: "/settings" },
   ];
 

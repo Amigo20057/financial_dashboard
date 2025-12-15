@@ -8,7 +8,6 @@ import NotFound from "./pages/not-found";
 import Settings from "./pages/settings";
 import Categories from "./pages/categories";
 import Transactions from "./pages/transactions";
-import Reports from "./pages/reports";
 
 const mainLayoutRoutes = [
   {
@@ -30,10 +29,6 @@ const mainLayoutRoutes = [
   {
     path: "transactions",
     element: <Transactions />,
-  },
-  {
-    path: "reports",
-    element: <Reports />,
   },
 ];
 
