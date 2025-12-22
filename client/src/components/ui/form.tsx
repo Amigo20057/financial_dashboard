@@ -62,12 +62,12 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold !text-gray-900">
-          {type === "register" ? "Create Account" : "Welcome Back"}
+          {type === "register" ? "Створити акаунт" : "Ласкаво просимо назад"}
         </h2>
         <p className="text-gray-600 text-sm mt-1">
           {type === "register"
-            ? "Sign up to get started"
-            : "Sign in to your account"}
+            ? "Зареєструйтесь, щоб розпочати"
+            : "Увійдіть у свій обліковий запис"}
         </p>
       </div>
 
@@ -75,7 +75,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name
+              ПІ
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -98,19 +98,19 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
               <input
                 type="text"
                 {...register("fullName", {
-                  required: "Full name is required",
+                  required: "ПІ є обов'язковим",
                   minLength: {
                     value: 2,
-                    message: "Name must be at least 2 characters",
+                    message: "Ім'я має містити щонайменше 2 символи",
                   },
                   maxLength: {
                     value: 50,
-                    message: "Name must not exceed 50 characters",
+                    message: "Ім'я не повинно перевищувати 50 символів",
                   },
                   validate: {
                     hasTwoWords: (value) =>
                       value.trim().split(" ").length >= 2 ||
-                      "Full name must contain at least first and last name",
+                      "Повне ім'я повинно містити щонайменше ім'я та прізвище",
                   },
                 })}
                 placeholder="John Doe"
@@ -156,7 +156,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
+              Електронна пошта
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -179,10 +179,10 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
               <input
                 type="email"
                 {...register("email", {
-                  required: "Email is required",
+                  required: "Необхідно вказати адресу електронної пошти",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    message: "Недійсна адреса електронної пошти",
                   },
                 })}
                 placeholder="john@example.com"
@@ -228,7 +228,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password
+              Пароль
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -251,14 +251,14 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
               <input
                 type="password"
                 {...register("password", {
-                  required: "Password is required",
+                  required: "Необхідно ввести пароль",
                   minLength: {
                     value: 5,
-                    message: "Password must be at least 5 characters",
+                    message: "Пароль має містити щонайменше 5 символів",
                   },
                   maxLength: {
                     value: 100,
-                    message: "Password must not exceed 100 characters",
+                    message: "Пароль не повинен перевищувати 100 символів",
                   },
                 })}
                 placeholder="••••••••"
@@ -308,7 +308,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
+              Електронна пошта
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -331,10 +331,10 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
               <input
                 type="email"
                 {...register("email", {
-                  required: "Email is required",
+                  required: "Необхідно вказати адресу електронної пошти",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    message: "Недійсна адреса електронної пошти",
                   },
                 })}
                 placeholder="john@example.com"
@@ -381,7 +381,7 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-700">
-                Password
+                Пароль
               </label>
             </div>
             <div className="relative">
@@ -405,10 +405,10 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
               <input
                 type="password"
                 {...register("password", {
-                  required: "Password is required",
+                  required: "Необхідно ввести пароль",
                   minLength: {
                     value: 5,
-                    message: "Password must be at least 5 characters",
+                    message: "Пароль має містити щонайменше 5 символів",
                   },
                 })}
                 placeholder="••••••••"
@@ -487,31 +487,31 @@ export default function Form({ type, setMessageType, setMessageText }: IProps) {
           </svg>
         )}
         {userState.status === "loading"
-          ? "Processing..."
+          ? "Обробка..."
           : type === "register"
-          ? "Create Account"
-          : "Sign In"}
+          ? "Створити акаунт"
+          : "Увійти"}
       </button>
 
       <p className="text-center text-sm text-gray-600 mt-6">
         {type === "register" ? (
           <>
-            Already have an account?{" "}
+            Вже є акаунт?{" "}
             <Link
               to="/auth/login"
               className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
             >
-              Sign in
+              Увійти
             </Link>
           </>
         ) : (
           <>
-            Don't have an account?{" "}
+            Немає облікового запису?{" "}
             <Link
               to="/auth/register"
               className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
             >
-              Sign up
+              Зареєструватися
             </Link>
           </>
         )}

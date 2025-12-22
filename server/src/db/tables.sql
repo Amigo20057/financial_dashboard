@@ -35,17 +35,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- -- === BUDGETS ===
--- CREATE TABLE IF NOT EXISTS budgets (
---     id SERIAL PRIMARY KEY,
---     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
---     month INT NOT NULL CHECK (month BETWEEN 1 AND 12),
---     year INT NOT NULL,
---     limit_amount NUMERIC(10,2) NOT NULL,
---     created_at TIMESTAMP DEFAULT NOW(),
---     updated_at TIMESTAMP DEFAULT NOW(),
---     UNIQUE (user_id, month, year)
--- );
 
 -- === DASHBOARD ===
 CREATE TABLE IF NOT EXISTS dashboard (
